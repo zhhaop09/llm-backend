@@ -1,11 +1,12 @@
+# filename: main.py
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from mangum import Mangum  # 云函数适配器
 import requests
 import os
+import uvicorn  # 添加这一行
 
-# 从环境变量读取 API_KEY（云函数可配置），也可以直接写死
 API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe")
 MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
@@ -20,7 +21,7 @@ class ChatRequest(BaseModel):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产建议改成具体域名
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,11 +43,12 @@ def chat(request: ChatRequest):
         data = resp.json()
         reply_text = data["choices"][0]["message"]["content"]
         return {"reply": reply_text}
-
     except requests.exceptions.HTTPError:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# 云函数入口
-handler = Mangum(app)
+# ✅ Railway 需要的入口
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # 必须用 PORT 环境变量！
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
