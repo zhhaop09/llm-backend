@@ -7,12 +7,12 @@ import uvicorn
 import jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
+import os
 
 # ==== 配置 ====
-API_KEY = "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe"
+API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe")
 MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
-
-SECRET_KEY = "your-secret"  # 建议用环境变量
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
 
 # Bot 列表
@@ -24,24 +24,24 @@ BOTS = {
 # ==== 初始化 ====
 app = FastAPI()
 
-# 跨域设置
+# 跨域
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境建议改成你的前端域名
+    allow_origins=["*"],  # 建议生产改成前端域名
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ==== 用户系统 ====
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# 默认用户数据库（内存存储）
+# 默认用户数据库
 users_db = {
-    "admin": pwd_context.hash("123456")  # 默认管理员账号
+    "admin": pwd_context.hash("123456")  # 默认管理员
 }
 
+# ==== 工具函数 ====
 def hash_password(password: str):
     return pwd_context.hash(password)
 
@@ -88,7 +88,7 @@ def root():
 def ping():
     return {"message": "pong"}
 
-# ==== 用户路由 ====
+# ==== 用户系统 ====
 @app.post("/register")
 def register(user: User):
     if user.username in users_db:
@@ -104,6 +104,11 @@ def login(user: User):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
     token = create_access_token({"sub": user.username})
     return {"access_token": token, "token_type": "bearer"}
+
+# 方便开发调试：直接获取 admin token
+@app.get("/dev/admin-token")
+def dev_admin_token():
+    return {"access_token": create_access_token({"sub": "admin"}), "token_type": "bearer"}
 
 # ==== Bot 列表 ====
 @app.get("/bots")
@@ -134,9 +139,9 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
         reply_text = resp.json()["choices"][0]["message"]["content"]
         return {"reply": reply_text}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
 
 # ==== 启动 ====
 if __name__ == "__main__":
-    port = 8000
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port)
