@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.responses import JSONRespons
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import requests
 import uvicorn
