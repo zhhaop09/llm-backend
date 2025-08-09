@@ -348,7 +348,15 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
     if request.botId not in BOTS:
         raise HTTPException(status_code=400, detail="无效的Bot ID")
 
-    bot_config = BOTS[request.botId]
+    bot_config = BOTS.get(request.botId)
+    if not bot_config:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Bot ID '{request.botId}' 未配置，请检查 botId 是否正确"
+        )
+
+
+    # bot_config = BOTS[request.botId]
 
     try:
         headers = {
