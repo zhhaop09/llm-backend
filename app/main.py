@@ -28,7 +28,7 @@ app = FastAPI()
 # 跨域
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 建议生产改成前端域名
+    allow_origins=["https://www.zhangandsn981.cn", "zhangandsn981.cn"],  # 建议生产改成前端域名
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,7 +39,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # 默认用户数据库
 users_db = {
-    "admin": pwd_context.hash("123456")  # 默认管理员
+    "admin": pwd_context.hash("123456"), # 默认管理员
+    "sun": pwd_context.hash("test123") # 新用户
 }
 
 # ==== 工具函数 ====
@@ -93,16 +94,6 @@ def root():
 @app.get("/ping")
 def ping():
     return {"message": "pong"}
-
-# ==== 用户系统 ====
-@app.post("/register")
-def register(user: User):
-    if user.username in users_db:
-        raise HTTPException(status_code=400, detail="用户已存在")
-    if user.username == "admin":
-        raise HTTPException(status_code=400, detail="禁止注册管理员账号")
-    users_db[user.username] = hash_password(user.password)
-    return {"message": "注册成功"}
 
 @app.post("/login")
 def login(user: User):
