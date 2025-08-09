@@ -27,7 +27,7 @@ app = FastAPI()
 # 跨域
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://www.zhangandsn981.cn/", "zhangandsn981.cn/"],  # 建议生产改成前端域名
+    allow_origins=["*"],  # 建议生产改成前端域名
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
