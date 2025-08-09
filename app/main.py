@@ -142,6 +142,7 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
 
 # ==== 启动 ====
+
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.environ.get("PORT", 8000))  # 读取 Railway 的 PORT
     uvicorn.run("main:app", host="0.0.0.0", port=port)
