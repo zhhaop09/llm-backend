@@ -36,7 +36,11 @@ app.add_middleware(
 # ==== 用户系统 ====
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-users_db = {}  # 临时用户存储，生产建议用数据库
+
+# 默认用户数据库（内存存储）
+users_db = {
+    "admin": pwd_context.hash("123456")  # 默认管理员账号
+}
 
 def hash_password(password: str):
     return pwd_context.hash(password)
@@ -89,6 +93,8 @@ def ping():
 def register(user: User):
     if user.username in users_db:
         raise HTTPException(status_code=400, detail="用户已存在")
+    if user.username == "admin":
+        raise HTTPException(status_code=400, detail="禁止注册管理员账号")
     users_db[user.username] = hash_password(user.password)
     return {"message": "注册成功"}
 
