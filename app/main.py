@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
-import uvicorn  # 添加这一行
+import uvicorn  # 添加这一行22
 
 API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe")
 MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
