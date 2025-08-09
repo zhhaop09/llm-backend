@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.responses import JSONRespons
 from pydantic import BaseModel
 import requests
 import uvicorn
@@ -80,6 +81,11 @@ class ChatRequest(BaseModel):
     messages: list[ChatMessage]
 
 # ==== 基础路由 ====
+
+@app.options("/{rest_of_path:path}")
+def preflight_handler(rest_of_path: str):
+    return JSONResponse(content={"status": "ok"})
+
 @app.get("/")
 def root():
     return {"status": "ok"}
