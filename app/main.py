@@ -17,6 +17,7 @@ MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+print("🔑 Railway 注入的 API Key:", repr(DEEPSEEK_API_KEY))
 DEEPSEEK_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 REFERER_SITE = "https://zhangandsn981.cn"  # 可选，用于 openrouter 统计排名
 SITE_TITLE = "Zhang AI Chatbot"  # 可选
