@@ -405,7 +405,7 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": bot_config.get("model", "deepseek-chat"),
+                "model": bot_config.get("model", "deepseek-chat-v3-0324:free"),
                 "messages": [
                     {"role": "system", "content": bot_config["systemPrompt"]}
                 ] + [m.dict() for m in request.messages],
