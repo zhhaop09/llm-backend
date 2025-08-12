@@ -251,7 +251,7 @@ BOTS = {
         "name": "深度助手",
         "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
         "provider": "deepseek",
-        "model": "deepseek-chat",
+        "model": "deepseek-chat-v3-0324:free",
         "description": "智能专业 AI 聊天助手",
         "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
@@ -259,7 +259,7 @@ BOTS = {
         "name": "深度助1手",
         "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
         "provider": "deepseek",
-        "model": "deepseek-chat",
+        "model": "deepseek-chat-v3-0324:free",
         "description": "智能专业 AI 聊天助手",
         "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
