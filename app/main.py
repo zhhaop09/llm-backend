@@ -9,7 +9,6 @@ import jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import os
-from openai import OpenAI
 
 # ==== 配置 ====
 API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe")
@@ -356,7 +355,7 @@ def test_deepseek():
     }
 
     payload = {
-        "model": "deepseek/deepseek-chat-v3-0324:free",
+        "model": "deepseek/deepseek-r1:free",
         "messages": [{"role": "user", "content": "什么是黑洞？"}],
         "stream": False
     }
