@@ -17,7 +17,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
 DEEPSEEK_API_KEY = "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" # os.getenv("DEEPSEEK_API_KEY", "sk-ec5d7406c7cf435a93a964979ab815ca")
 DEEPSEEK_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-
+REFERER_SITE = "https://zhangandsn981.cn"  # 可选，用于 openrouter 统计排名
+SITE_TITLE = "Zhang AI Chatbot"  # 可选
 # Bot 列表
 BOTS = {
     "bot1": {
@@ -351,44 +352,49 @@ def get_bots(current_user: str = Depends(get_current_user)):
 def test_deepseek():
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "HTTP-Referer": REFERER_SITE,
+        "X-Title": SITE_TITLE
     }
 
     payload = {
         "model": "deepseek/deepseek-r1-0528-qwen3-8b:free",
-        "messages": [{"role": "user", "content": "什么是黑洞？"}],
+        "messages": [
+            {"role": "user", "content": "什么是黑洞？"}
+        ],
         "stream": False
     }
 
     try:
-        print("🚀 正在发送 DeepSeek 测试请求...")
-        print("🔐 headers:", headers)
-        print("📦 payload:", payload)
+        print("🚀 正在发送 DeepSeek 请求...")
+        response = requests.post(
+            url=DEEPSEEK_API_URL,
+            headers=headers,
+            data=json.dumps(payload),
+            timeout=30
+        )
 
-        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
+        print("✅ 状态码:", response.status_code)
+        print("📨 原始响应:", response.text)
 
-        print("✅ 响应状态:", response.status_code)
-        print("📨 返回文本:", response.text)
-
-        response.raise_for_status()  # 如果非 2xx 状态码，将抛出异常
-
+        response.raise_for_status()
         data = response.json()
 
-        return {"reply": data["choices"][0]["message"]["content"]}
+        reply = data["choices"][0]["message"]["content"]
+        return {"reply": reply}
 
     except requests.exceptions.RequestException as e:
-        print("❌ 请求失败:", str(e))
+        print("❌ 网络请求失败:", str(e))
         return {"error": f"请求失败: {str(e)}"}
 
-    except ValueError as e:
-        print("❌ 无法解析 JSON:", str(e))
-        return {"error": "无法解析返回的 JSON"}
+    except (KeyError, ValueError) as e:
+        print("❌ 解析错误:", str(e))
+        return {"error": "解析返回数据失败"}
 
     except Exception as e:
         import traceback
         traceback.print_exc()
         return {"error": f"未知错误: {str(e)}"}
-# ==== 聊天接口 ====
 @app.post("/chat")
 def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
     if request.botId not in BOTS:
