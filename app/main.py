@@ -363,7 +363,7 @@ def test_deepseek():
     }
 
     payload = {
-        "model": "deepseek-r1:free",  # 或 deepseek-reasoner
+        "model": "deepseek-chat-v3-0324:free",  # 或 deepseek-reasoner
         "messages": [{"role": "user", "content": "什么是黑洞？"}],
         "stream": False
     }
