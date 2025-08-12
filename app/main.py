@@ -380,6 +380,15 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
             resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
             resp.raise_for_status()
             reply_text = resp.json()["choices"][0]["message"]["content"]
+
+            print("✅ DeepSeek headers:", headers)
+            print("📦 DeepSeek payload:", payload)
+            print("➡️ 正在请求 DeepSeek 接口...")
+
+            resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
+
+            print("⬅️ DeepSeek response status:", resp.status_code)
+            print("⬅️ DeepSeek response text:", resp.text)
             return {"reply": reply_text}
 
         else:
