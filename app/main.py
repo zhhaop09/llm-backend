@@ -253,12 +253,14 @@ BOTS = {
     "bot3": {
         "name": "深度助手",
         "systemPrompt": ( "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。"),
-        "provider": "deepseek"
+        "provider": "deepseek",
+        "model" :  "deepseek-chat-v3-0324:free"
     },
     "bot4": {
         "name": "深度助1手",
         "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
-        "provider": "deepseek"
+        "provider": "deepseek",
+        "model": "deepseek-chat-v3-0324:free"
     },
 };
 
