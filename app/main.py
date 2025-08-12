@@ -16,7 +16,7 @@ MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
 DEEPSEEK_API_KEY = "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" # os.getenv("DEEPSEEK_API_KEY", "sk-ec5d7406c7cf435a93a964979ab815ca")
-DEEPSEEK_API_URL = "https://openrouter.ai/api/v1/chat/completions
+DEEPSEEK_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # Bot 列表
 BOTS = {
@@ -248,7 +248,7 @@ BOTS = {
             )
         },
     "bot3": {
-        "name": "深度助手",
+        "name": "女坏",
         "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
         "provider": "deepseek",
         "model": "deepseek-chat",
@@ -256,7 +256,7 @@ BOTS = {
         "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
     "bot4": {
-        "name": "深度助1手",
+        "name": "男坏",
         "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
         "provider": "deepseek",
         "model": "deepseek-chat",
