@@ -15,7 +15,7 @@ API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQ
 MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
-DEEPSEEK_API_KEY = "sk-ec5d7406c7cf435a93a964979ab815ca" # os.getenv("DEEPSEEK_API_KEY", "sk-ec5d7406c7cf435a93a964979ab815ca")
+DEEPSEEK_API_KEY = "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" # os.getenv("DEEPSEEK_API_KEY", "sk-ec5d7406c7cf435a93a964979ab815ca")
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 # Bot 列表
@@ -363,7 +363,7 @@ def test_deepseek():
     }
 
     payload = {
-        "model": "deepseek-chat",  # 或 deepseek-reasoner
+        "model": "deepseek-chat-v3-0324:free",  # 或 deepseek-reasoner
         "messages": [
             {"role": "system", "content": "你是一位有帮助的 AI 助手"},
             {"role": "user", "content": "你好，什么是黑洞？"}
