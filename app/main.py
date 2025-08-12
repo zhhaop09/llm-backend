@@ -366,7 +366,6 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
 
     try:
         if provider == "deepseek":
-            # ✅ DeepSeek API 调用
             headers = {
                 "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
                 "Content-Type": "application/json"
@@ -382,26 +381,28 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
             resp.raise_for_status()
             reply_text = resp.json()["choices"][0]["message"]["content"]
             return {"reply": reply_text}
+
         else:
-            try:
-                headers = {
-                    "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json"
-                }
-                payload = {
-                    "model": "glm-4",
-                    "messages": [
-                        {"role": "system", "content": bot_config["systemPrompt"]}
-                    ] + [m.dict() for m in request.messages]
-                }
-                resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
-                resp.raise_for_status()
-                reply_text = resp.json()["choices"][0]["message"]["content"]
-                return {"reply": reply_text}
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
+            headers = {
+                "Authorization": f"Bearer {API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "glm-4",
+                "messages": [
+                    {"role": "system", "content": bot_config["systemPrompt"]}
+                ] + [m.dict() for m in request.messages]
+            }
+            resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
+            resp.raise_for_status()
+            reply_text = resp.json()["choices"][0]["message"]["content"]
+            return {"reply": reply_text}
+
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
+
 
 # ==== 启动 ====
 
