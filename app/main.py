@@ -16,7 +16,7 @@ MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
 DEEPSEEK_API_KEY = "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" # os.getenv("DEEPSEEK_API_KEY", "sk-ec5d7406c7cf435a93a964979ab815ca")
-DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
+DEEPSEEK_API_URL = "https://openrouter.ai/api/v1/chat/completions
 
 # Bot 列表
 BOTS = {
