@@ -398,6 +398,8 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
                 resp.raise_for_status()
                 reply_text = resp.json()["choices"][0]["message"]["content"]
                 return {"reply": reply_text}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
 
