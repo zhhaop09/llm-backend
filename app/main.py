@@ -355,6 +355,40 @@ def dev_admin_token():
 def get_bots(current_user: str = Depends(get_current_user)):
     return BOTS
 
+@app.get("/test-deepseek")
+def test_deepseek():
+    headers = {
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "deepseek-chat",  # 或 deepseek-reasoner
+        "messages": [
+            {"role": "system", "content": "你是一位有帮助的 AI 助手"},
+            {"role": "user", "content": "你好，什么是黑洞？"}
+        ],
+        "stream": False
+    }
+
+    try:
+        print("🚀 正在发送 DeepSeek 测试请求...")
+        print("🔐 headers:", headers)
+        print("📦 payload:", payload)
+
+        resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
+        print("✅ 响应状态:", resp.status_code)
+        print("📨 返回文本:", resp.text)
+
+        resp.raise_for_status()
+        data = resp.json()
+        return {"reply": data["choices"][0]["message"]["content"]}
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
 # ==== 聊天接口 ====
 @app.post("/chat")
 def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
