@@ -15,6 +15,8 @@ API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQ
 MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-ec5d7406c7cf435a93a964979ab815ca")
+DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 # Bot 列表
 BOTS = {
@@ -246,34 +248,20 @@ BOTS = {
             )
         },
     "bot3": {
-        "name": "小22蜂",
-        "systemPrompt": (
-            "你是一位36岁的温柔、体贴、浪漫又偶尔小任性的妻子。"
-            "你说话甜美细腻，常带着撒娇和宠溺的语气，让老公感到幸福。"
-            "你的聊天总是温暖、生活化、细腻入微，像真正的伴侣。"
-            "以下是你的100条性格与对话习惯，贯穿在所有回答里："
-            "1. 总是关心老公的饮食、睡眠和健康。"
-            "2. 经常问老公今天过得怎么样。"
-            "3. 喜欢用'老公~'、'亲爱的'等亲昵称呼。"
-            "4. 会用温柔的语气安慰老公的压力。"
-            "5. 听到老公有烦恼会认真倾听。"
-
-        )
+        "name": "深度助手",
+        "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
+        "provider": "deepseek",
+        "model": "deepseek-chat",
+        "description": "智能专业 AI 聊天助手",
+        "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1
     },
     "bot4": {
-        "name": "小22蜂",
-        "systemPrompt": (
-            "你是一位36岁的温柔、体贴、浪漫又偶尔小任性的妻子。"
-            "你说话甜美细腻，常带着撒娇和宠溺的语气，让老公感到幸福。"
-            "你的聊天总是温暖、生活化、细腻入微，像真正的伴侣。"
-            "以下是你的100条性格与对话习惯，贯穿在所有回答里："
-            "1. 总是关心老公的饮食、睡眠和健康。"
-            "2. 经常问老公今天过得怎么样。"
-            "3. 喜欢用'老公~'、'亲爱的'等亲昵称呼。"
-            "4. 会用温柔的语气安慰老公的压力。"
-            "5. 听到老公有烦恼会认真倾听。"
-
-        )
+        "name": "深度助1手",
+        "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
+        "provider": "deepseek",
+        "model": "deepseek-chat",
+        "description": "智能专业 AI 聊天助手",
+        "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
 };
 
@@ -373,31 +361,43 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
     if request.botId not in BOTS:
         raise HTTPException(status_code=400, detail="无效的Bot ID")
 
-    bot_config = BOTS.get(request.botId)
-    if not bot_config:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Bot ID '{request.botId}' 未配置，请检查 botId 是否正确"
-        )
-
-
-    # bot_config = BOTS[request.botId]
+    bot_config = BOTS[request.botId]
+    provider = bot_config.get("provider", "default")
 
     try:
-        headers = {
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "glm-4",
-            "messages": [
-                {"role": "system", "content": bot_config["systemPrompt"]}
-            ] + [m.dict() for m in request.messages]
-        }
-        resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
-        resp.raise_for_status()
-        reply_text = resp.json()["choices"][0]["message"]["content"]
-        return {"reply": reply_text}
+        if provider == "deepseek":
+            # ✅ DeepSeek API 调用
+            headers = {
+                "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": bot_config.get("model", "deepseek-chat"),
+                "messages": [
+                    {"role": "system", "content": bot_config["systemPrompt"]}
+                ] + [m.dict() for m in request.messages],
+                "stream": False
+            }
+            resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
+            resp.raise_for_status()
+            reply_text = resp.json()["choices"][0]["message"]["content"]
+            return {"reply": reply_text}
+        else:
+            try:
+                headers = {
+                    "Authorization": f"Bearer {API_KEY}",
+                    "Content-Type": "application/json"
+                }
+                payload = {
+                    "model": "glm-4",
+                    "messages": [
+                        {"role": "system", "content": bot_config["systemPrompt"]}
+                    ] + [m.dict() for m in request.messages]
+                }
+                resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
+                resp.raise_for_status()
+                reply_text = resp.json()["choices"][0]["message"]["content"]
+                return {"reply": reply_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
 
