@@ -249,17 +249,17 @@ BOTS = {
         },
     "bot3": {
         "name": "女坏",
-        "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
+        "systemPrompt": ( "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。"),
         "provider": "deepseek",
-        "model": "deepseek-chat",
+        "model": "deepseek-chat-v3-0324:free",
         "description": "智能专业 AI 聊天助手",
         "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
     "bot4": {
         "name": "男坏",
-        "systemPrompt": "你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。",
+        "systemPrompt": ("你是一位逻辑清晰、语言专业的 AI 助手，擅长知识解答与问题分析。"),
         "provider": "deepseek",
-        "model": "deepseek-chat",
+        "model": "deepseek-chat-v3-0324:free",
         "description": "智能专业 AI 聊天助手",
         "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
@@ -359,11 +359,12 @@ def get_bots(current_user: str = Depends(get_current_user)):
 def test_deepseek():
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost"  # 🔧 必须加，防止被拒
     }
 
     payload = {
-        "model": "deepseek-chat-v3-0324:free",  # 或 deepseek-reasoner
+        "model": "deepseek-chat-v3-0324:free",
         "messages": [
             {"role": "system", "content": "你是一位有帮助的 AI 助手"},
             {"role": "user", "content": "你好，什么是黑洞？"}
