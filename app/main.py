@@ -325,6 +325,12 @@ class ChatRequest(BaseModel):
 def preflight_handler(rest_of_path: str):
     return JSONResponse(content={"status": "ok"})
 
+@app.get("/env-check")
+def env_check():
+    return {
+        "DEEPSEEK_API_KEY": os.getenv("DEEPSEEK_API_KEY")
+    }
+
 @app.get("/")
 def root():
     return {"status": "ok"}
