@@ -355,7 +355,7 @@ def test_deepseek():
     }
 
     payload = {
-        "model": "deepseek/deepseek-r1:free",
+        "model": "deepseek/deepseek-r1-0528-qwen3-8b:free",
         "messages": [{"role": "user", "content": "什么是黑洞？"}],
         "stream": False
     }
