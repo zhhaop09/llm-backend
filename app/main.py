@@ -9,6 +9,7 @@ import jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import os
+import json
 
 # ==== 配置 ====
 API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe")
