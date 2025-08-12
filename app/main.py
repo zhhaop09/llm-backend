@@ -253,7 +253,7 @@ BOTS = {
         "provider": "deepseek",
         "model": "deepseek-chat",
         "description": "智能专业 AI 聊天助手",
-        "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1
+        "avatar": "https://api.dicebear.com/9.x/fun-emoji/svg?seed=deepseek1"
     },
     "bot4": {
         "name": "深度助1手",
