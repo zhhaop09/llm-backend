@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a6b3cae7-8529-4f0f-b836-2f3f9ad917b8" name="Changes" comment="df">
+    <list default="true" id="a6b3cae7-8529-4f0f-b836-2f3f9ad917b8" name="Changes" comment="final_push_de">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
     </list>
@@ -68,14 +68,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1754707053659</updated>
-    </task>
-    <task id="LOCAL-00001" summary="df">
-      <option name="closed" value="true" />
-      <created>1754707088834</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1754707088834</updated>
     </task>
     <task id="LOCAL-00002" summary="df">
       <option name="closed" value="true" />
@@ -389,11 +381,92 @@
       <option name="project" value="LOCAL" />
       <updated>1754975450361</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="df">
+      <option name="closed" value="true" />
+      <created>1754975598537</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1754975598537</updated>
+    </task>
+    <task id="LOCAL-00042" summary="df">
+      <option name="closed" value="true" />
+      <created>1754975935359</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1754975935359</updated>
+    </task>
+    <task id="LOCAL-00043" summary="df">
+      <option name="closed" value="true" />
+      <created>1754976268491</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1754976268491</updated>
+    </task>
+    <task id="LOCAL-00044" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754976441396</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1754976441396</updated>
+    </task>
+    <task id="LOCAL-00045" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754976668847</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1754976668847</updated>
+    </task>
+    <task id="LOCAL-00046" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754976963037</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1754976963037</updated>
+    </task>
+    <task id="LOCAL-00047" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754977245763</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1754977245763</updated>
+    </task>
+    <task id="LOCAL-00048" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754977265614</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1754977265614</updated>
+    </task>
+    <task id="LOCAL-00049" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754978057659</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1754978057659</updated>
+    </task>
+    <task id="LOCAL-00050" summary="final_push_de">
+      <option name="closed" value="true" />
+      <created>1754978166457</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1754978166457</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="df" />
-    <option name="LAST_COMMIT_MESSAGE" value="df" />
+    <MESSAGE value="final_push_de" />
+    <option name="LAST_COMMIT_MESSAGE" value="final_push_de" />
   </component>
 </project>
