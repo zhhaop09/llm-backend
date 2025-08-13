@@ -473,11 +473,17 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
 
         elif provider == "gemini":
             try:
+                print("🔍 进入 Gemini 分支")
+                print("🧠 systemPrompt:", bot_config['systemPrompt'])
+                print("📨 messages:", request.messages)
+
                 model = genai.GenerativeModel("gemini-pro")
-                # 将消息整理成纯文本
                 user_msgs = "\n".join([m.content for m in request.messages if m.role == "user"])
                 prompt = f"{bot_config['systemPrompt']}\n\n用户说：{user_msgs}"
+
                 response = model.generate_content(prompt)
+                print("✅ Gemini 返回:", response)
+
                 return {"reply": response.text}
             except Exception as e:
                 import traceback
