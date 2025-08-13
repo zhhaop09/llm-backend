@@ -492,17 +492,18 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
 
         elif provider == "gemini":
             try:
-                print("🔍 进入 Gemini 分支")
-                print("🧠 systemPrompt:", bot_config['systemPrompt'])
-                print("📨 messages:", request.messages)
+                if not GEMINI_API_KEY:
+                    raise ValueError("GEMINI_API_KEY 未设置")
+                genai.configure(api_key=GEMINI_API_KEY)
 
-                model = genai.GenerativeModel("gemini-2.5-flash")
+                model_name = bot_config.get("model", "gemini-pro")
+                model = genai.GenerativeModel(model_name)
+
                 user_msgs = "\n".join([m.content for m in request.messages if m.role == "user"])
                 prompt = f"{bot_config['systemPrompt']}\n\n用户说：{user_msgs}"
 
                 response = model.generate_content(prompt)
-                print("✅ Gemini 返回:", response)
-
+                print("✅ Gemini response:", response)
                 return {"reply": response.text}
             except Exception as e:
                 import traceback
