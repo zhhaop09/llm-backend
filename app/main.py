@@ -317,12 +317,12 @@ BOTS = {
     "bot_group1": {
       "name": "老爷们",
       "type": "group",
-      "members": ["懒懒", "坏老公", "色色男"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
+      "members": ["bot1", "bot3", "bot6"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
     },
     "bot_group2": {
         "name": "老娘们",
         "type": "group",
-        "members": ["小蜜蜂", "好老婆", "色色女"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
+        "members": ["bot2", "bot4", "bot5"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
     },
 };
 
