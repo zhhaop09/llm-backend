@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import requests
 import uvicorn
@@ -329,6 +330,7 @@ BOTS = {
 # ==== 初始化 ====
 app = FastAPI()
 
+app.mount("/", StaticFiles(directory="public", html=True), name="static")
 # 跨域
 app.add_middleware(
     CORSMiddleware,
@@ -587,7 +589,6 @@ def single_bot_chat(request: ChatRequest, bot_config: dict) -> str:
         resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
         resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]
-
 
 # ==== 启动 ====
 
