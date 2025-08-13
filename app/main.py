@@ -465,20 +465,31 @@ def test_deepseek():
         return {"error": f"未知错误: {str(e)}"}
 @app.post("/chat")
 def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
+    print("📨 收到聊天请求！")
+    print("🆔 Bot ID:", request.botId)
+    print("💬 消息内容:", [m.dict() for m in request.messages])
+
     if request.botId not in BOTS:
+        print("❌ 无效 bot ID:", request.botId)
         raise HTTPException(status_code=400, detail="无效的Bot ID")
 
     bot_config = BOTS[request.botId]
 
-    # 群组模式
+    # ✅ 群组模式处理
     if bot_config.get("type") == "group":
+        print("👥 进入群组模式")
+        print("👥 群成员:", bot_config["members"])
+
         replies = []
         for member_id in bot_config["members"]:
             member_config = BOTS.get(member_id)
             if not member_config:
+                print(f"⚠️ 群成员 {member_id} 不存在，跳过")
                 continue
+
+            print(f"🧠 正在请求群成员: {member_id} ({member_config['name']})")
+
             try:
-                # 构造伪请求对象，复用单 bot 调用逻辑
                 single_request = ChatRequest(botId=member_id, messages=request.messages)
                 member_reply = single_bot_chat(single_request, member_config)
                 replies.append({
@@ -486,6 +497,7 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
                     "botName": member_config["name"],
                     "reply": member_reply
                 })
+                print(f"✅ 成员 {member_id} 回复成功")
             except Exception as e:
                 import traceback
                 traceback.print_exc()
@@ -494,11 +506,24 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
                     "botName": member_config["name"],
                     "reply": f"[{member_config['name']}] 出错了：{str(e)}"
                 })
+                print(f"❌ 成员 {member_id} 回复失败：{str(e)}")
+
+        print("✅ 群组回复完成，共", len(replies), "条")
         return {"groupReplies": replies}
 
-    # 单 bot 模式
+    # ✅ 单 bot 模式处理
     else:
-        return {"reply": single_bot_chat(request, bot_config)}
+        print("🤖 单 bot 模式：", bot_config["name"])
+        try:
+            reply = single_bot_chat(request, bot_config)
+            print("✅ 单 bot 回复成功")
+            return {"reply": reply}
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            print("❌ 单 bot 回复失败:", str(e))
+            raise HTTPException(status_code=500, detail=f"Bot 调用失败: {str(e)}")
+
 def single_bot_chat(request: ChatRequest, bot_config: dict) -> str:
     provider = bot_config.get("provider", "default")
 
