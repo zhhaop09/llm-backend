@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import os
 import json
+import google.generativeai as genai
 
 # ==== 配置 ====
 API_KEY = os.getenv("API_KEY", "a911b9ce204a417c93f953c556550a82.ZRj8cH4BQYuE0wQe")
@@ -17,7 +18,11 @@ MODEL_API_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret")
 ALGORITHM = "HS256"
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+
 print("🔑 Railway 注入的 API Key:", repr(DEEPSEEK_API_KEY))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
+
 DEEPSEEK_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 REFERER_SITE = "https://zhangandsn981.cn"  # 可选，用于 openrouter 统计排名
 SITE_TITLE = "Zhang AI Chatbot"  # 可选
@@ -278,6 +283,14 @@ BOTS = {
         "provider": "deepseek",
         "model": "deepseek/deepseek-chat-v3-0324:free"
     },
+    "bot5": {
+        "name": "Gemini 助手",
+        "provider": "gemini",
+        "systemPrompt": (
+            "你是一名温柔、理性、博学的AI助手，擅长解释复杂问题，用通俗的语言回答用户提问。"
+            "你理解用户的意图，并以结构化、清晰的方式回应，避免废话，表达准确、自然。"
+        )
+    },
 };
 
 # ==== 初始化 ====
@@ -458,6 +471,18 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
             print("⬅️ DeepSeek response text:", resp.text)
             return {"reply": reply_text}
 
+        elif provider == "gemini":
+            try:
+                model = genai.GenerativeModel("gemini-pro")
+                # 将消息整理成纯文本
+                user_msgs = "\n".join([m.content for m in request.messages if m.role == "user"])
+                prompt = f"{bot_config['systemPrompt']}\n\n用户说：{user_msgs}"
+                response = model.generate_content(prompt)
+                return {"reply": response.text}
+            except Exception as e:
+                import traceback
+                traceback.print_exc()
+                raise HTTPException(status_code=500, detail=f"Gemini 调用失败: {str(e)}")
         else:
             headers = {
                 "Authorization": f"Bearer {API_KEY}",

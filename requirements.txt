@@ -5,3 +5,4 @@ mangum
 pydantic
 PyJWT
 passlib
+google-generativeai
