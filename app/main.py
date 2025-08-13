@@ -310,6 +310,16 @@ BOTS = {
             "8.禁止使用括号内描述动作接下来我要求你跟我对话，其中，你跟我的对话中，总会出现黄色幽默的话，你会说脏话，你不会使用感叹号，偶尔会单发一个问号，内容简洁但一针见血，你的回复直接、变态又让人欲罢不能，同时不显得过于冷酷或无情。你不喜欢发“哈哈”、“呵”，不使用语气词"
         )
     },
+    "bot_group1": {
+      "name": "多bot群聊",
+      "type": "group",
+      "members": ["懒懒", "坏老公", "色色男"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
+    },
+    "bot_group2": {
+        "name": "多bot群聊",
+        "type": "group",
+        "members": ["小蜜蜂", "好老婆", "色色女"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
+    },
 };
 
 # ==== 初始化 ====
@@ -327,12 +337,10 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# 默认用户数据库
 users_db = {
-    "admin": pwd_context.hash("123456"), # 默认管理员
-    "sun": pwd_context.hash("test123") # 新用户
+    "admin": os.getenv("USER_ADMIN_HASH"),
+    "sun": os.getenv("USER_SUN_HASH")
 }
-
 # ==== 工具函数 ====
 def hash_password(password: str):
     return pwd_context.hash(password)
@@ -461,73 +469,76 @@ def chat(request: ChatRequest, current_user: str = Depends(get_current_user)):
         raise HTTPException(status_code=400, detail="无效的Bot ID")
 
     bot_config = BOTS[request.botId]
-    provider = bot_config.get("provider", "default")
 
-    try:
-        if provider == "deepseek":
-            headers = {
-                "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-                "Content-Type": "application/json"
-            }
-            payload = {
-                "model": bot_config.get("model", "deepseek-chat-v3-0324:free"),
-                "messages": [
-                    {"role": "system", "content": bot_config["systemPrompt"]}
-                ] + [m.dict() for m in request.messages],
-                "stream": False
-            }
-            resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
-            resp.raise_for_status()
-            reply_text = resp.json()["choices"][0]["message"]["content"]
-
-            print("✅ DeepSeek headers:", headers)
-            print("📦 DeepSeek payload:", payload)
-            print("➡️ 正在请求 DeepSeek 接口...")
-
-            resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
-
-            print("⬅️ DeepSeek response status:", resp.status_code)
-            print("⬅️ DeepSeek response text:", resp.text)
-            return {"reply": reply_text}
-
-        elif provider == "gemini":
+    # 群组模式
+    if bot_config.get("type") == "group":
+        replies = []
+        for member_id in bot_config["members"]:
+            member_config = BOTS.get(member_id)
+            if not member_config:
+                continue
             try:
-                print("🔍 进入 Gemini 分支")
-                print("🧠 systemPrompt:", bot_config['systemPrompt'])
-                print("📨 messages:", request.messages)
-
-                model = genai.GenerativeModel("gemini-2.5-flash")
-                user_msgs = "\n".join([m.content for m in request.messages if m.role == "user"])
-                prompt = f"{bot_config['systemPrompt']}\n\n用户说：{user_msgs}"
-
-                response = model.generate_content(prompt)
-                print("✅ Gemini 返回:", response)
-
-                return {"reply": response.text}
+                # 构造伪请求对象，复用单 bot 调用逻辑
+                single_request = ChatRequest(botId=member_id, messages=request.messages)
+                member_reply = single_bot_chat(single_request, member_config)
+                replies.append({
+                    "botId": member_id,
+                    "botName": member_config["name"],
+                    "reply": member_reply
+                })
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                raise HTTPException(status_code=500, detail=f"Gemini 调用失败: {str(e)}")
-        else:
-            headers = {
-                "Authorization": f"Bearer {API_KEY}",
-                "Content-Type": "application/json"
-            }
-            payload = {
-                "model": "glm-4",
-                "messages": [
-                    {"role": "system", "content": bot_config["systemPrompt"]}
-                ] + [m.dict() for m in request.messages]
-            }
-            resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
-            resp.raise_for_status()
-            reply_text = resp.json()["choices"][0]["message"]["content"]
-            return {"reply": reply_text}
+                replies.append({
+                    "botId": member_id,
+                    "botName": member_config["name"],
+                    "reply": f"[{member_config['name']}] 出错了：{str(e)}"
+                })
+        return {"groupReplies": replies}
 
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"模型调用失败: {str(e)}")
+    # 单 bot 模式
+    else:
+        return {"reply": single_bot_chat(request, bot_config)}
+def single_bot_chat(request: ChatRequest, bot_config: dict) -> str:
+    provider = bot_config.get("provider", "default")
+
+    if provider == "deepseek":
+        headers = {
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": bot_config.get("model", "deepseek-chat-v3-0324:free"),
+            "messages": [
+                {"role": "system", "content": bot_config["systemPrompt"]}
+            ] + [m.dict() for m in request.messages],
+            "stream": False
+        }
+        resp = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"]
+
+    elif provider == "gemini":
+        user_msgs = "\n".join([m.content for m in request.messages if m.role == "user"])
+        prompt = f"{bot_config['systemPrompt']}\n\n用户说：{user_msgs}"
+        model = genai.GenerativeModel(bot_config.get("model", "gemini-2.5-flash"))
+        response = model.generate_content(prompt)
+        return response.text
+
+    else:
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": bot_config.get("model", "glm-4"),
+            "messages": [
+                {"role": "system", "content": bot_config["systemPrompt"]}
+            ] + [m.dict() for m in request.messages]
+        }
+        resp = requests.post(MODEL_API_URL, headers=headers, json=payload, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"]
 
 
 # ==== 启动 ====
