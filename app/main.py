@@ -311,12 +311,12 @@ BOTS = {
         )
     },
     "bot_group1": {
-      "name": "多bot群聊",
+      "name": "老爷们",
       "type": "group",
       "members": ["懒懒", "坏老公", "色色男"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
     },
     "bot_group2": {
-        "name": "多bot群聊",
+        "name": "老娘们",
         "type": "group",
         "members": ["小蜜蜂", "好老婆", "色色女"]  # 懒懒、小蜜蜂、Gemini Pro、Flash
     },
