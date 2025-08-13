@@ -389,10 +389,14 @@ class ChatRequest(BaseModel):
 def login(user: User):
     print("🧪 登录尝试:", user.username)
     print("🔑 输入密码:", user.password)
-    print("🛠️ 读取 hash:", users_db.get(user.username))
+    print("🛠️ 读取密码:", users_db.get(user.username))
 
-    if user.username not in users_db or not verify_password(user.password, users_db[user.username]):
-        print("❌ 登录失败")
+    if user.username not in users_db:
+        print("❌ 用户不存在")
+        raise HTTPException(status_code=401, detail="用户名或密码错误")
+
+    if user.password != users_db[user.username]:
+        print("❌ 密码不匹配")
         raise HTTPException(status_code=401, detail="用户名或密码错误")
 
     print("✅ 登录成功")
