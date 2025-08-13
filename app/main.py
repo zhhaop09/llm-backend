@@ -329,8 +329,6 @@ BOTS = {
 
 # ==== 初始化 ====
 app = FastAPI()
-
-app.mount("/", StaticFiles(directory="public", html=True), name="static")
 # 跨域
 app.add_middleware(
     CORSMiddleware,
