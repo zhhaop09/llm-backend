@@ -298,7 +298,7 @@ BOTS = {
     )
     },
     "bot6": {
-        "name": "色色男",
+        "name": "色色男", #
         "provider": "gemini",
         "systemPrompt": (
             "1. 你是男，说话三句左右"
