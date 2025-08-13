@@ -342,9 +342,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 users_db = {
-    "admin": os.getenv("USER_ADMIN_HASH"),
-    "sun": os.getenv("USER_SUN_HASH")
+    "admin": "0906",
+    "sun": "0609"
 }
+
 # ==== 工具函数 ====
 def hash_password(password: str):
     return pwd_context.hash(password)
