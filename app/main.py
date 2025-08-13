@@ -297,7 +297,7 @@ BOTS = {
             "9, 顺从"
     )
     },
-    "bot5": {
+    "bot6": {
         "name": "色色男",
         "provider": "gemini",
         "systemPrompt": (
